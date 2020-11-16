@@ -63,23 +63,21 @@ ReactESP app([]() {
   uint read_delay = 1000;
 
 #ifdef ESP8266
-  uint8_t pinBilge = 7;
+  uint8_t pin = 13;
 #elif defined(ESP32)
-  uint8_t = pinBilge = x;
-  uint8_t = pinMast = y;
+  uint8_t = pin = x; // x is a placeholder for the real pin
 #endif
 
-//  DallasTemperatureSensors *dtsBilge = new DallasTemperatureSensors(pinBilge);
-//  DallasTemperatureSensors *dtsOutside = new DallasTemperatureSensors(pinOutside);
+  DallasTemperatureSensors *dts = new DallasTemperatureSensors(pin);
 
-//  auto *bilge_temp = new OneWireTemperature(dtsBilge, read_delay, "/bilgeWaterTemperature/oneWire");
-//  auto *outside_temp = new OneWireTemperature(dtsOutside, read_delay, "/outsideTemperature/oneWire");
+  auto *bilge_temp = new OneWireTemperature(dts, read_delay, "/bilgeWaterTemperature/oneWire");
+  auto *outside_temp = new OneWireTemperature(dts, read_delay, "/outsideTemperature/oneWire");
 
-//  bilge_temp->connect_to(new Linear(1.0, 0.0, "/bilgeWaterTemperature/linear"))
-//      ->connect_to(new SKOutputNumber("environment.bilge.waterTemperature"));
+  bilge_temp->connect_to(new Linear(1.0, 0.0, "/bilgeWaterTemperature/linear"))
+      ->connect_to(new SKOutputNumber("environment.bilge.waterTemperature"));
 
-//  outside_temp->connect_to(new Linear(1.0, 0.0, "/outsideTemperature/linear"))
-//  ->connect_to(new SKOutputNumber("environment.outside.temperature"));
+  outside_temp->connect_to(new Linear(1.0, 0.0, "/outsideTemperature/linear"))
+      ->connect_to(new SKOutputNumber("environment.outside.temperature"));
 
   auto *pUltrasonicSens = new UltrasonicSens(TRIGGER_PIN, INPUT_PIN, read_delay, ultrasonic_in_config_path);
 
