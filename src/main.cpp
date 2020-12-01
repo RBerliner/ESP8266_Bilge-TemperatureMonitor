@@ -63,21 +63,26 @@ ReactESP app([]() {
   uint read_delay = 1000;
 
 #ifdef ESP8266
-  uint8_t pin = 13;
+  uint8_t pin = 12;
 #elif defined(ESP32)
   uint8_t = pin = x; // x is a placeholder for the real pin
 #endif
+
 
   DallasTemperatureSensors *dts = new DallasTemperatureSensors(pin);
 
   auto *bilge_temp = new OneWireTemperature(dts, read_delay, "/bilgeWaterTemperature/oneWire");
   auto *outside_temp = new OneWireTemperature(dts, read_delay, "/outsideTemperature/oneWire");
+  auto *cabin_temp = new OneWireTemperature(dts, read_delay, "/cabinTemperature/oneWire");
 
   bilge_temp->connect_to(new Linear(1.0, 0.0, "/bilgeWaterTemperature/linear"))
       ->connect_to(new SKOutputNumber("environment.bilge.waterTemperature"));
 
   outside_temp->connect_to(new Linear(1.0, 0.0, "/outsideTemperature/linear"))
       ->connect_to(new SKOutputNumber("environment.outside.temperature"));
+
+  cabin_temp->connect_to(new Linear(1.0, 0.0, "/cabinTemperature/linear"))
+      ->connect_to(new SKOutputNumber("environment.inside.temperature"));
 
   auto *pUltrasonicSens = new UltrasonicSens(TRIGGER_PIN, INPUT_PIN, read_delay, ultrasonic_in_config_path);
 
